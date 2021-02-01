@@ -1,0 +1,7 @@
+{
+  "env": {
+    "GITHUB_OWNER": "ttskch",
+    "GITHUB_REPO": "docker-deployer",
+    "GITHUB_BRANCH": "main"
+  }
+}

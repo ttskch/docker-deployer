@@ -1,0 +1,9 @@
+name: 1-day-cron
+on:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl https://docker-deployer.vercel.app/api/cron
