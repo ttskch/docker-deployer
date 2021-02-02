@@ -3,9 +3,6 @@ const axios = require('axios')
 const semver = require('semver')
 const github = require('../src/github')
 
-// they cannot be installed by composer because of some broken dependencies
-const excludedVersionsMatcher = /(dev|2\.0\.0|2\.0\.1|2\.0\.2|2\.0\.3|3\.0\.0-beta|3\.0\.0-beta\.1)/
-
 // map of virtual php versions required from deployer and php docker image versions
 const phpVersions = {
   '5.99.0': '5',
@@ -20,7 +17,7 @@ const processor = async () => {
   const res = await axios.get('https://repo.packagist.org/p/deployer/deployer.json')
   Object.values(res.data.packages['deployer/deployer']).forEach(data => {
     const deployerVersion = data.version.replace(/^v/, '')
-    if (!deployerVersion.match(excludedVersionsMatcher)) {
+    if (!deployerVersion.match(/dev/)) {
       const phpVersion = semver.maxSatisfying(Object.keys(phpVersions), data.require.php)
       const phpDockerImageVersion = phpVersions[phpVersion]
       targetTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
