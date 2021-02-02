@@ -9,7 +9,7 @@ fi
 
 if [ $SOURCE_BRANCH = "main" ] ; then
   PHP_VERSION=7
-  DEPLOYER_VERSION=@stable
+  DEPLOYER_VERSION=6.8.0
 fi
 
 docker build \
