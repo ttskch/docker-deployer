@@ -36,12 +36,12 @@ const processor = async () => {
 
   // add non-existent tags
   tagsToBeAdded.forEach(async tag => {
-    // await github.addTagToBranch(
-    //   process.env.GITHUB_OWNER,
-    //   process.env.GITHUB_REPO,
-    //   process.env.GITHUB_BRANCH,
-    //   tag,
-    // )
+    await github.addTagToBranch(
+      process.env.GITHUB_OWNER,
+      process.env.GITHUB_REPO,
+      process.env.GITHUB_BRANCH,
+      tag,
+    )
   })
 
   return true
