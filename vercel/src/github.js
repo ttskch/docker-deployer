@@ -1,7 +1,7 @@
 const {Octokit} = require('@octokit/rest')
-const octokit = new Octokit()
+const octokit = new Octokit({auth: process.env.GITHUB_ACCESS_TOKEN})
 
-module.exports.getTagsFromBranch = async (owner, repo, branch) => {
+module.exports.getTags = async (owner, repo) => {
   let result = []
 
   let page = 1
@@ -14,24 +14,39 @@ module.exports.getTagsFromBranch = async (owner, repo, branch) => {
     })).data
 
     result = result.concat(data)
-  } while (!data.length)
+  } while (data.length)
 
   return result
 }
 
 module.exports.addTagToBranch = async (owner, repo, branch, tag) => {
-  object = (await octokit.repos.getBranch(
+
+  commitSha = (await octokit.git.getRef({
     owner,
     repo,
-    branch,
-  )).commit.sha
+    ref: `heads/${branch}`,
+  })).data.object.sha
 
-  return await octokit.git.createTag({
+  // todo: octokit.repos.getBranch() has a bug
+  // commitSha = (await octokit.repos.getBranch(
+  //   owner,
+  //   repo,
+  //   branch,
+  // )).commit.sha
+
+  tagObjectSha = (await octokit.git.createTag({
     owner,
     repo,
     tag,
     message: tag,
-    object,
+    object: commitSha,
     type: 'commit',
+  })).data.sha
+
+  return await octokit.git.createRef({
+    owner,
+    repo,
+    ref: `refs/tags/${tag}`,
+    sha: tagObjectSha,
   })
 }

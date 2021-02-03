@@ -14,22 +14,32 @@ const phpVersions = {
 const processor = async () => {
   // list target tag names
   let targetTags = []
-  const res = await axios.get('https://repo.packagist.org/p/deployer/deployer.json')
-  Object.values(res.data.packages['deployer/deployer']).forEach(data => {
+  const res = (await axios.get('https://repo.packagist.org/p/deployer/deployer.json')).data
+  const list = Object.values(res.packages['deployer/deployer']).filter(data => !data.version.match(/dev/))
+  list.forEach(data => {
     const deployerVersion = data.version.replace(/^v/, '')
-    if (!deployerVersion.match(/dev/)) {
-      const phpVersion = semver.maxSatisfying(Object.keys(phpVersions), data.require.php)
-      const phpDockerImageVersion = phpVersions[phpVersion]
-      targetTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
-    }
+    const phpGte = data.require.php.match(/^>=(\d+)/)
+    const phpDockerImageVersion = phpGte ? phpGte[1] : phpVersions[semver.maxSatisfying(Object.keys(phpVersions), data.require.php)]
+    targetTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
+  })
+  // add wild tags like php-7/deployer-6 or php-7/deployer-6.8
+  const stables = targetTags.map(tag => tag.match(/^php-.+\/deployer-(\d+\.\d+\.\d+)$/)).filter(v => !!v).map(match => match[1])
+  const majors = Array.from(new Set(stables.map(v => v.replace(/\.\d+\.\d+$/, '')))).map(range => semver.maxSatisfying(stables, range))
+  const minors = Array.from(new Set(stables.map(v => v.replace(/\.\d+$/, '')))).map(range => semver.maxSatisfying(stables, range))
+  majors.forEach(version => {
+    tag = targetTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
+    targetTags.push(tag.replace(/^php-(.+)\/deployer-(.+)$/, `php-$1/deployer-${version.replace(/\.\d+\.\d+$/, '')}`))
+  })
+  minors.forEach(version => {
+    tag = targetTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
+    targetTags.push(tag.replace(/^php-(.+)\/deployer-(.+)$/, `php-$1/deployer-${version.replace(/\.\d+$/, '')}`))
   })
 
   // get existent tag names
-  const existentTags = await github.getTagsFromBranch(
+  const existentTags = (await github.getTags(
     process.env.GITHUB_OWNER,
     process.env.GITHUB_REPO,
-    process.env.GITHUB_BRANCH,
-  )
+  )).map(tag => tag.name)
 
   // extract tags to be added
   const tagsToBeAdded = targetTags.filter(tag => !existentTags.includes(tag.name))
