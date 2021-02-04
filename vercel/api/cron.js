@@ -66,10 +66,9 @@ const processor = async () => {
       true,
     )
   })
-
-  return true
 }
 
 module.exports = async (req, res) => {
-  await processor() && res.send('OK')
+  await processor()
+  res.send('OK')
 }
