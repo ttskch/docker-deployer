@@ -25,15 +25,15 @@ const processor = async () => {
 
   // create wild tags like php-7/deployer-6 or php-7/deployer-6.8
   let wildTags = []
-  const stables = wildTags.map(tag => tag.match(/^php-.+\/deployer-(\d+\.\d+\.\d+)$/)).filter(v => !!v).map(match => match[1])
+  const stables = fixedTags.map(tag => tag.match(/^php-.+\/deployer-(\d+\.\d+\.\d+)$/)).filter(v => !!v).map(match => match[1])
   const majors = Array.from(new Set(stables.map(v => v.replace(/\.\d+\.\d+$/, '')))).map(range => semver.maxSatisfying(stables, range))
   const minors = Array.from(new Set(stables.map(v => v.replace(/\.\d+$/, '')))).map(range => semver.maxSatisfying(stables, range))
   majors.forEach(version => {
-    tag = wildTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
+    tag = fixedTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
     wildTags.push(tag.replace(/^php-(.+)\/deployer-(.+)$/, `php-$1/deployer-${version.replace(/\.\d+\.\d+$/, '')}`))
   })
   minors.forEach(version => {
-    tag = wildTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
+    tag = fixedTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
     wildTags.push(tag.replace(/^php-(.+)\/deployer-(.+)$/, `php-$1/deployer-${version.replace(/\.\d+$/, '')}`))
   })
 
