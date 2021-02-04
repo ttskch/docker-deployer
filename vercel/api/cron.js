@@ -22,6 +22,7 @@ const processor = async () => {
     const phpDockerImageVersion = phpGte ? phpGte[1] : phpVersions[semver.maxSatisfying(Object.keys(phpVersions), data.require.php)]
     fixedTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
   })
+  console.log(`fixed tags: ${fixedTags}`)
 
   // create wild tags like php-7/deployer-6 or php-7/deployer-6.8
   let wildTags = []
@@ -36,15 +37,18 @@ const processor = async () => {
     tag = fixedTags.filter(v => v.match(new RegExp(`.+/deployer-${version.replace('.', '\.')}`)))[0]
     wildTags.push(tag.replace(/^php-(.+)\/deployer-(.+)$/, `php-$1/deployer-${version.replace(/\.\d+$/, '')}`))
   })
+  console.log(`wild tags: ${wildTags}`)
 
   // get existent tags
   const existentTags = (await github.getTags(
     process.env.GITHUB_OWNER,
     process.env.GITHUB_REPO,
   )).map(tag => tag.name)
+  console.log(`existent tags: ${existentTags}`)
 
   // extract tags to be added
   const tagsToBeAdded = fixedTags.filter(tag => !existentTags.includes(tag))
+  console.log(`tags to be added: ${tagsToBeAdded}`)
 
   // add non-existent tags
   tagsToBeAdded.forEach(async tag => {
@@ -54,6 +58,7 @@ const processor = async () => {
       process.env.GITHUB_BRANCH,
       tag,
     )
+    console.log(`tag ${tag} is added`)
   })
 
   // re-add wild tags
@@ -65,6 +70,7 @@ const processor = async () => {
       tag,
       true,
     )
+    console.log(`tag ${tag} is added forcely`)
   })
 }
 
