@@ -23,7 +23,7 @@ module.exports = {
 
   addTagToBranch: async (owner, repo, branch, tag, force = false) => {
     if (force) {
-      await this.deleteTag(owner, repo, tag)
+      await module.exports.deleteTag(owner, repo, tag)
     }
 
     const commitSha = (await octokit.git.getRef({
