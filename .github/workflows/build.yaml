@@ -1,4 +1,4 @@
-name: ci
+name: build
 
 # @see https://stackoverflow.com/questions/61891328/trigger-github-action-only-on-new-tags#answer-61892639
 on:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   # @see https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
-  push-to-dockerhub:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,8 +18,8 @@ jobs:
       - name: Get variables from pushed tag
         id: get_variables
         run: |
-          PHP_VERSION=`echo ${GITHUB_REF##*/} | sed -r "s/php-(.+)\/deployer-(.+)/\1/"`
-          DEPLOYER_VERSION=`echo ${GITHUB_REF##*/} | sed -r "s/php-(.+)\/deployer-(.+)/\2/"`
+          PHP_VERSION=`echo ${GITHUB_REF#refs/tags/} | sed -r "s/php-(.+)\/deployer-(.+)/\1/"`
+          DEPLOYER_VERSION=`echo ${GITHUB_REF#refs/tags/} | sed -r "s/php-(.+)\/deployer-(.+)/\2/"`
           
           if [[ $DEPLOYER_VERSION =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
             DEPLOYER_VERSION=$DEPLOYER_VERSION.*
@@ -41,5 +41,7 @@ jobs:
           build-args: |
             PHP_VERSION=${{ steps.get_variables.outputs.PHP_VERSION }}
             DEPLOYER_VERSION=${{ steps.get_variables.outputs.DEPLOYER_VERSION }}
-          tags: ttskch/deployer:${{ steps.get_variables.outputs.DEPLOYER_VERSION }}
+          tags: |
+            ttskch/deployer:${{ steps.get_variables.outputs.DEPLOYER_VERSION }}
+            ttskch/deployer:latest
           push: true
