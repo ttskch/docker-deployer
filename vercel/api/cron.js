@@ -68,7 +68,7 @@ const processor = async () => {
     logs.push(`${tag} is added`)
   }
 
-  // re-add wild tags
+  // re-add wild tags to re-build and overwrite images
   logs.push('start adding wild tags:')
   if (tagsToBeAdded.length) {
     for (const tag of wildTags) {
