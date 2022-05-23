@@ -6,7 +6,7 @@ const github = require('../src/github')
 // map of virtual php versions required from deployer and php docker image versions
 const phpVersions = {
   '5.99.0': '5',
-  '7.0.99': '7.0',
+  '7.0.99': '7.0', // for "~7.0"
   '7.99.0': '7',
   '8.99.0': '8',
 }
