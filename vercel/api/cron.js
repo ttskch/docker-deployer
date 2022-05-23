@@ -58,7 +58,7 @@ const processor = async () => {
 
   // add non-existent tags
   logs.push('start adding fixed tags:')
-  tagsToBeAdded.forEach(async tag => {
+  for (const tag of tagsToBeAdded) {
     await github.addTagToBranch(
       process.env.GITHUB_OWNER,
       process.env.GITHUB_REPO,
@@ -66,12 +66,12 @@ const processor = async () => {
       tag,
     )
     logs.push(`${tag} is added`)
-  })
+  }
 
   // re-add wild tags
   logs.push('start adding wild tags:')
   if (tagsToBeAdded.length) {
-    wildTags.forEach(async tag => {
+    for (const tag of wildTags) {
       await github.addTagToBranch(
         process.env.GITHUB_OWNER,
         process.env.GITHUB_REPO,
@@ -80,7 +80,7 @@ const processor = async () => {
         true,
       )
       logs.push(`${tag} is added forcely`)
-    })
+    }
   }
 
   return logs.join('\n')
