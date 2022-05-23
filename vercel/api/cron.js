@@ -88,5 +88,6 @@ const processor = async () => {
 
 module.exports = async (req, res) => {
   const log =  await processor()
+  console.log(log)
   res.send(log)
 }
