@@ -20,8 +20,8 @@ const processor = async () => {
   const list = Object.values(res.packages['deployer/deployer']).filter(data => !data.version.match(/dev/))
   list.forEach(data => {
     const deployerVersion = data.version.replace(/^v/, '')
-    const phpGte = data.require.php.match(/^>=(\d+)/)
-    const phpDockerImageVersion = phpGte ? phpGte[1] : phpVersions[semver.maxSatisfying(Object.keys(phpVersions), data.require.php)]
+    const phpSemver = (data?.require?.php || '*').replace('|', '||')
+    const phpDockerImageVersion = phpVersions[semver.maxSatisfying(Object.keys(phpVersions), phpSemver)]
     fixedTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
   })
   logs.push('fixed tags:')
