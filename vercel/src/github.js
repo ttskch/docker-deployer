@@ -8,7 +8,7 @@ module.exports = {
     let page = 1
     let data
     do {
-      data = (await octokit.repos.listTags({
+      data = (await octokit.rest.repos.listTags({
         owner,
         repo,
         per_page: 100,
@@ -26,20 +26,13 @@ module.exports = {
       await module.exports.deleteTag(owner, repo, tag)
     }
 
-    const commitSha = (await octokit.git.getRef({
+    const commitSha = (await octokit.rest.repos.getBranch({
       owner,
       repo,
-      ref: `heads/${branch}`,
-    })).data.object.sha
+      branch,
+    })).data.commit.sha
 
-    // todo: octokit.repos.getBranch() has a bug
-    // commitSha = (await octokit.repos.getBranch(
-    //   owner,
-    //   repo,
-    //   branch,
-    // )).commit.sha
-
-    const tagObjectSha = (await octokit.git.createTag({
+    const tagObjectSha = (await octokit.rest.git.createTag({
       owner,
       repo,
       tag,
@@ -48,7 +41,7 @@ module.exports = {
       type: 'commit',
     })).data.sha
 
-    return await octokit.git.createRef({
+    return await octokit.rest.git.createRef({
       owner,
       repo,
       ref: `refs/tags/${tag}`,
@@ -58,7 +51,7 @@ module.exports = {
 
   deleteTag: async (owner, repo, tag) => {
     try {
-      await octokit.git.deleteRef({
+      await octokit.rest.git.deleteRef({
         owner,
         repo,
         ref: `refs/tags/${tag}`,
