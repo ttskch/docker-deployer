@@ -1,5 +1,3 @@
-/*
-!api
-!src
-!package.json
-!vercel.json
+.env.dist
+.gitignore
+.vercelignore

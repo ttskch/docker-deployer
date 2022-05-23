@@ -1,8 +1,0 @@
-{
-  "env": {
-    "GITHUB_ACCESS_TOKEN": "@github-access-token",
-    "GITHUB_OWNER": "ttskch",
-    "GITHUB_REPO": "docker-deployer",
-    "GITHUB_BRANCH": "main"
-  }
-}
