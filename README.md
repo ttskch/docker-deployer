@@ -16,7 +16,7 @@ $ docker run -v `pwd`:/wd ttskch/deployer dep deploy
 You can specify the version of deployer by docker image tag like below.
 
 ```bash
-$ docker run -v `pwd`:/wd ttskch/deployer dep deploy # @stable
+$ docker run -v `pwd`:/wd ttskch/deployer dep deploy # newest
 $ docker run -v `pwd`:/wd ttskch/deployer:6 dep deploy # 6.*
 $ docker run -v `pwd`:/wd ttskch/deployer:6.8 dep deploy # 6.8.*
 $ docker run -v `pwd`:/wd ttskch/deployer:6.8.0 dep deploy # 6.8.0
