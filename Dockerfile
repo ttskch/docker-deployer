@@ -15,3 +15,5 @@ RUN \
     chmod +x /usr/bin/dep; \
   fi \
   && apk add --update bash openssh
+
+WORKDIR /wd

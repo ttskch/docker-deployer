@@ -8,7 +8,7 @@ Docker image for [deployer.org](https://deployer.org/), a deployment tool writte
 ## Usage
 
 ```bash
-$ docker run ttskch/deployer dep deploy
+$ docker run -v `pwd`:/wd ttskch/deployer dep deploy
 ```
 
 ## Tags
@@ -16,11 +16,11 @@ $ docker run ttskch/deployer dep deploy
 You can specify the version of deployer by docker image tag like below.
 
 ```bash
-$ docker run ttskch/deployer dep deploy # @stable
-$ docker run ttskch/deployer:6 dep deploy # 6.*
-$ docker run ttskch/deployer:6.8 dep deploy # 6.8.*
-$ docker run ttskch/deployer:6.8.0 dep deploy # 6.8.0
-$ docker run ttskch/deployer:7.0.0-beta.13 dep deploy # 7.0.0-beta.13
+$ docker run -v `pwd`:/wd ttskch/deployer dep deploy # @stable
+$ docker run -v `pwd`:/wd ttskch/deployer:6 dep deploy # 6.*
+$ docker run -v `pwd`:/wd ttskch/deployer:6.8 dep deploy # 6.8.*
+$ docker run -v `pwd`:/wd ttskch/deployer:6.8.0 dep deploy # 6.8.0
+$ docker run -v `pwd`:/wd ttskch/deployer:7.0.0-beta.13 dep deploy # 7.0.0-beta.13
 ```
 
 Available tags are listed on [here](https://hub.docker.com/r/ttskch/deployer/tags?page=1&ordering=name).
