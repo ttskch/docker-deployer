@@ -21,12 +21,19 @@ jobs:
           PHP_VERSION=`echo ${GITHUB_REF#refs/tags/} | sed -r "s/php-(.+)\/deployer-(.+)/\1/"`
           DEPLOYER_VERSION=`echo ${GITHUB_REF#refs/tags/} | sed -r "s/php-(.+)\/deployer-(.+)/\2/"`
           IMAGE_TAG=$DEPLOYER_VERSION
+
+          if [ $PHP_VERSION = '5' ] || [ $PHP_VERSION = '7.0' ]; then
+            COMPOSER_VERSION=2.2
+          else
+            COMPOSER_VERSION=latest
+          fi
           
           if [[ $DEPLOYER_VERSION =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
             DEPLOYER_VERSION=$DEPLOYER_VERSION.*
           fi
           
           echo ::set-output name=PHP_VERSION::$PHP_VERSION
+          echo ::set-output name=COMPOSER_VERSION::$COMPOSER_VERSION
           echo ::set-output name=DEPLOYER_VERSION::$DEPLOYER_VERSION
           echo ::set-output name=IMAGE_TAG::$IMAGE_TAG
 
@@ -42,6 +49,7 @@ jobs:
           context: .
           build-args: |
             PHP_VERSION=${{ steps.get_variables.outputs.PHP_VERSION }}
+            COMPOSER_VERSION=${{ steps.get_variables.outputs.COMPOSER_VERSION }}
             DEPLOYER_VERSION=${{ steps.get_variables.outputs.DEPLOYER_VERSION }}
           tags: |
             ttskch/deployer:${{ steps.get_variables.outputs.IMAGE_TAG }}
