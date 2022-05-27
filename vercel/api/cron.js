@@ -20,8 +20,13 @@ const processor = async () => {
   const list = Object.values(res.packages['deployer/deployer']).filter(data => !data.version.match(/dev/))
   list.forEach(data => {
     const deployerVersion = data.version.replace(/^v/, '')
-    const phpSemver = (data?.require?.php || '*').replace('|', '||')
-    const phpDockerImageVersion = phpVersions[semver.maxSatisfying(Object.keys(phpVersions), phpSemver)]
+    let phpDockerImageVersion
+    if ((data?.require?.php || '*').match(/^>=5/)) {
+      phpDockerImageVersion = '5' // not suitable for semver but practically proper
+    } else {
+      const phpSemver = (data?.require?.php || '*').replace('|', '||')
+      phpDockerImageVersion = phpVersions[semver.maxSatisfying(Object.keys(phpVersions), phpSemver)]
+    }
     fixedTags.push(`php-${phpDockerImageVersion}/deployer-${deployerVersion}`)
   })
   logs.push('fixed tags:')
