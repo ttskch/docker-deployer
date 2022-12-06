@@ -1,3 +1,14 @@
+# ⚠️ No longer under maintenance
+
+This repo is no longer under maintenance on today. Instead, please install deployer into your docker image manually just like below:
+
+```bash
+# For example, in php:8-cli-alpine Docker image:
+$ apk add --update openssh
+$ wget https://github.com/deployphp/deployer/releases/download/v7.0.2/deployer.phar -O /usr/bin/dep && chmod +x /usr/bin/dep
+$ dep deploy
+```
+
 # docker-deployer
 
 [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/ttskch/deployer?style=flat-square)](https://hub.docker.com/r/ttskch/deployer)
